@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    volumes:
+      - ./heimdall/config:/config
+
+  pihole:
+    image: pihole/pihole
+    container_name: pihole
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    volumes:
+      - ./pihole/etc-pihole:/etc/pihole
+      - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
+
+  nextcloud:
+    image: linuxserver/nextcloud
+    container_name: nextcloud
+    ports:
+      - "8082:80"
+    restart: unless-stopped
+    volumes:
+      - ./nextcloud/config:/config
+      - ./nextcloud/data:/data
+
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+    restart: unless-stopped
+    volumes:
+      - ./plex/config:/config
+      - ./plex/media:/media
